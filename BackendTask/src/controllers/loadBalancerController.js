@@ -1,13 +1,27 @@
 import axios from 'axios';
 import metrics from '../models/metrics.js';
+import os from 'os';
 
-const host = process.env.HOST || 'localhost';
+const getIPAddress = () => {
+    const interfaces = os.networkInterfaces();
+    for (const iface in interfaces) {
+        for (const alias of interfaces[iface]) {
+            if (alias.family === 'IPv4' && !alias.internal) {
+                return alias.address;
+            }
+        }
+    }
+    return '127.0.0.1'; // fallback to localhost if no IP found
+};
+
+const host = getIPAddress();
+
 const apiendpoints = [
     { name: 'WeatherAPI1', url: `http://${host}:5040/weather`, responseTime: 200, weight: 1, healthy: true },
     { name: 'WeatherAPI2', url: `http://${host}:3002/weather`, responseTime: 100, weight: 2, healthy: true },
     { name: 'WeatherAPI3', url: `http://${host}:3003/weather`, responseTime: 300, weight: 1, healthy: true },
     { name: 'WeatherAPI4', url: `http://${host}:3004/weather`, responseTime: 250, weight: 2, healthy: true },
-    { name: 'WeatherAPI5', url: `http://${host}:3005/weather`, responseTime: 150, weight: 1, healthy: true }
+    { name: 'WeatherAPI5', url: `http://${host}:3005/weather`, responseTime: 150, weight: 1, healthy: false } // Marking this endpoint as unhealthy initially
 ];
 
 let currentIndex = 0;
@@ -27,13 +41,25 @@ const checkHealth = async () => {
 };
 
 const getnextEndpoint = () => {
-    currentIndex = (currentIndex + 1) % apiendpoints.length;
-    currentweight = (currentweight + apiendpoints[currentIndex].weight) % maxweight;
-    return apiendpoints[currentIndex];
+    let attempts = 0;
+    while (attempts < apiendpoints.length) {
+        currentIndex = (currentIndex + 1) % apiendpoints.length;
+        currentweight = (currentweight + apiendpoints[currentIndex].weight) % maxweight;
+        if (apiendpoints[currentIndex].healthy) {
+            return apiendpoints[currentIndex];
+        }
+        attempts++;
+    }
+    // If no healthy endpoint is found, return null or handle appropriately
+    return null;
 };
 
 const routerequest = async (req, res) => {
     const endpoint = getnextEndpoint();
+    if (!endpoint) {
+        return res.status(503).send('No healthy endpoints available');
+    }
+
     const requestInfo = {
         name: endpoint.name,
         url: endpoint.url,
@@ -56,8 +82,8 @@ const routerequest = async (req, res) => {
     }
 };
 
-const getmetrics = (req, res) => {
-    const logs = metrics.getlogs();
+const getmetrics = async (req, res) => {
+    const logs = await metrics.getLogs();
     res.json(logs);
 };
 
