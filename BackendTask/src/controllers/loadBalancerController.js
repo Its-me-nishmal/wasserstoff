@@ -1,13 +1,14 @@
 import axios from 'axios';
 import metrics from '../models/metrics.js';
 
+const host = process.env.HOST || 'localhost';
 const apiendpoints = [
-    { name: 'WeatherAPI1', url: 'http://localhost:3001/weather', responseTime: 200, weight: 1, healthy: true },
-    { name: 'WeatherAPI2', url: 'http://localhost:3002/weather', responseTime: 100, weight: 2, healthy: true },
-    { name: 'WeatherAPI3', url: 'http://localhost:3003/weather', responseTime: 300, weight: 1, healthy: true },
-    { name: 'WeatherAPI4', url: 'http://localhost:3004/weather', responseTime: 250, weight: 2, healthy: true },
-    { name: 'WeatherAPI5', url: 'http://localhost:3005/weather', responseTime: 150, weight: 1, healthy: true }
-]
+    { name: 'WeatherAPI1', url: `http://${host}:5040/weather`, responseTime: 200, weight: 1, healthy: true },
+    { name: 'WeatherAPI2', url: `http://${host}:3002/weather`, responseTime: 100, weight: 2, healthy: true },
+    { name: 'WeatherAPI3', url: `http://${host}:3003/weather`, responseTime: 300, weight: 1, healthy: true },
+    { name: 'WeatherAPI4', url: `http://${host}:3004/weather`, responseTime: 250, weight: 2, healthy: true },
+    { name: 'WeatherAPI5', url: `http://${host}:3005/weather`, responseTime: 150, weight: 1, healthy: true }
+];
 
 let currentIndex = 0;
 let currentweight = 0;
@@ -23,13 +24,13 @@ const checkHealth = async () => {
             console.log(error);
         }
     }
-}
+};
 
 const getnextEndpoint = () => {
     currentIndex = (currentIndex + 1) % apiendpoints.length;
     currentweight = (currentweight + apiendpoints[currentIndex].weight) % maxweight;
     return apiendpoints[currentIndex];
-}
+};
 
 const routerequest = async (req, res) => {
     const endpoint = getnextEndpoint();
@@ -39,7 +40,7 @@ const routerequest = async (req, res) => {
         responseTime: endpoint.responseTime,
         weight: endpoint.weight,
         healthy: endpoint.healthy,
-        timstamp: Date.now()
+        timestamp: Date.now()
     };
     try {
         const response = await axios.get(endpoint.url);
@@ -53,16 +54,16 @@ const routerequest = async (req, res) => {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
-}
+};
 
 const getmetrics = (req, res) => {
     const logs = metrics.getlogs();
     res.json(logs);
-}
+};
 
 setInterval(checkHealth, 5000);
 
 export {
     routerequest,
     getmetrics
-}
+};
