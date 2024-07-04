@@ -7,8 +7,12 @@ const mockserver = (port, requestTime, name) => {
             res.json({ message: `${name} response`, temperature: Math.floor(Math.random() * 35) + 1 });
         }, requestTime);
     });
-    app.listen(port, () => {
-        console.log(`Mock server is running on port ${port}`);
+    app.listen(port, (err) => {
+        if (err) {
+            console.error('Error starting the server:', err);
+        } else {
+            console.log(`Mock server is running on port ${port}`);
+        }
     });
 };
 
