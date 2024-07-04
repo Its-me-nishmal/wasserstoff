@@ -1,0 +1,31 @@
+{
+  "name": "backendtask",
+  "version": "1.0.0",
+  "description": "a whether load balancer mern application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Its-me-nishmal/wasserstoff.git"
+  },
+  "keywords": [
+    "load-balancer"
+  ],
+  "author": "nishmal-vadakara",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Its-me-nishmal/wasserstoff/issues"
+  },
+  "homepage": "https://github.com/Its-me-nishmal/wasserstoff#readme",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
