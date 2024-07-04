@@ -16,5 +16,12 @@ const mockserver = (port, requestTime, name) => {
     });
 };
 
+// Direct Call
+mockserver('5040', 200, 'WeatherAPI1');
+mockserver('3002', 100, 'WeatherAPI2');
+mockserver('3003', 300, 'WeatherAPI3');
+mockserver('3004', 250, 'WeatherAPI4');
+mockserver('3005', 150, 'WeatherAPI5');
+
 // Export the mockserver function
 export default mockserver;
