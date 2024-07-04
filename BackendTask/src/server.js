@@ -1,11 +1,11 @@
 import app from './app.js'
 import mockserver from './mockServers.js';
 
-// mockserver('3001', 200, 'WeatherAPI1');
-// mockserver('3002', 100, 'WeatherAPI2');
-// mockserver('3003', 300, 'WeatherAPI3');
-// mockserver('3004', 250, 'WeatherAPI4');
-// mockserver('3005', 150, 'WeatherAPI5');
+mockserver('4564', 200, 'WeatherAPI1');
+mockserver('6576', 100, 'WeatherAPI2');
+mockserver('3020', 300, 'WeatherAPI3');
+mockserver('8045', 250, 'WeatherAPI4');
+mockserver('9948', 150, 'WeatherAPI5');
 
 
 const PORT = process.env.PORT || 3000;
