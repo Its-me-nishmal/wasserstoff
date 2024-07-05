@@ -11,7 +11,7 @@ const getIPAddress = () => {
             }
         }
     }
-    return '127.0.0.1'; // fallback to localhost if no IP found
+    return '127.0.0.1';
 };
 
 const host = getIPAddress();
@@ -50,7 +50,6 @@ const getnextEndpoint = () => {
         }
         attempts++;
     }
-    // If no healthy endpoint is found, return null or handle appropriately
     return null;
 };
 
