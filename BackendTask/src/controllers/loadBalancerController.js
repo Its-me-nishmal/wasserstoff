@@ -46,7 +46,7 @@ export const routerequest = async (req, res) => {
         endpoint: endpoint,
         connections: endpoint.connections,
         timestamp: Date.now(),
-        requestDetails: { query: req.query, params: req.params, body: req.body } // Avoid full request object
+        requestDetails: { query: req.query, params: req.params, body: req.body }
     };
 
     // Enqueue the request based on the queue strategy
@@ -85,7 +85,7 @@ export const routerequest = async (req, res) => {
             res.status(500).send('Internal Server Error');
         }
     } finally {
-        endpoint.connections -= 1; // Decrement connection count after response
+        endpoint.connections -= 1; 
     }
 };
 
