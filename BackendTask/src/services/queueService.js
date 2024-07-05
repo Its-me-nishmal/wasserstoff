@@ -63,19 +63,19 @@ const handleRequest = async (request) => {
     }
 
     try {
-        const response = await axios.get(endpoint.url, { params: req.query });
-        metrics.log({ ...request, responseTime: Date.now() - request.timestamp });
-        if (!res.headersSent) {
-            res.json({
-                message: `Routed to ${endpoint.url} using strategy ${request.strategy}`,
-                data: response.data,
-                requestInfo: request
-            });
+        let response;
+        if ( req ) {
+            response = await axios.get(endpoint.url, { params: req.query });
+        } else { 
+            response = await axios.get(endpoint.url);
+
         }
+        metrics.log({ ...request, responseTime: Date.now() - request.timestamp });
+        
     } catch (error) {
         handleRequestError(request, error);
     } finally {
-        endpoint.connections -= 1;
+        endpoint.connections <= 0 ? endpoint.connections = 0 : endpoint.connections -= 1;
     }
 };
 
