@@ -1,9 +1,12 @@
+import axios from 'axios';
 import { getnextEndpoint, getRandomEndpoint, getLeastResponseTimeEndpoint, getLeastConnectionEndpoint, checkHealth } from '../services/loadBalancerService.js';
 import metrics from '../models/metrics.js';
-import axios from 'axios';
+import { enqueueFIFO, enqueuePriority, enqueueRoundRobin, processQueue } from '../services/queueService.js';
 
 export const routerequest = async (req, res) => {
     const strategy = req.query.strategy || 'random';
+    const queue = req.query.queue || 'fifo';
+
     let endpoint;
 
     switch (strategy) {
@@ -27,6 +30,10 @@ export const routerequest = async (req, res) => {
         return res.status(503).send('No healthy endpoints available');
     }
 
+    if (typeof endpoint.connections !== 'number') {
+        endpoint.connections = 0; // Initialize connections if not present
+    }
+
     endpoint.connections += 1; // Increment connection count
 
     const requestInfo = {
@@ -36,9 +43,29 @@ export const routerequest = async (req, res) => {
         weight: endpoint.weight,
         healthy: endpoint.healthy,
         strategy: strategy,
+        endpoint: endpoint,
         connections: endpoint.connections,
         timestamp: Date.now(),
+        requestDetails: { query: req.query, params: req.params, body: req.body } // Avoid full request object
     };
+
+    // Enqueue the request based on the queue strategy
+    switch (queue) {
+        case 'fifo':
+            enqueueFIFO(requestInfo);
+            break;
+        case 'priority':
+            enqueuePriority(requestInfo);
+            break;
+        case 'round-robin':
+            enqueueRoundRobin(requestInfo);
+            break;
+        default:
+            enqueueFIFO(requestInfo);
+    }
+
+    // Process the queue
+    processQueue();
 
     const queryParams = req.query;
     const requestUrl = endpoint.url + '?' + new URLSearchParams(queryParams).toString();
@@ -52,8 +79,11 @@ export const routerequest = async (req, res) => {
             requestInfo
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+        console.error('Request failed:', error);
+        metrics.logError({ ...requestInfo, error: error.message });
+        if (!res.headersSent) {
+            res.status(500).send('Internal Server Error');
+        }
     } finally {
         endpoint.connections -= 1; // Decrement connection count after response
     }

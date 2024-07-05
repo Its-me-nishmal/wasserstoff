@@ -2,11 +2,11 @@ import axios from 'axios';
 import { getIPAddress } from '../utils/network.js';
 
 const apiendpoints = [
-    { name: 'WeatherAPI1', url: `http://${getIPAddress()}:5040/weather`, responseTime: 200, weight: 1, healthy: true, connections: 0 },
-    { name: 'WeatherAPI2', url: `http://${getIPAddress()}:3002/weather`, responseTime: 100, weight: 2, healthy: true, connections: 0 },
-    { name: 'WeatherAPI3', url: `http://${getIPAddress()}:3003/weather`, responseTime: 300, weight: 1, healthy: true, connections: 0 },
-    { name: 'WeatherAPI4', url: `http://${getIPAddress()}:3004/weather`, responseTime: 250, weight: 2, healthy: true, connections: 0 },
-    { name: 'WeatherAPI5', url: `http://${getIPAddress()}:3005/weather`, responseTime: 150, weight: 1, healthy: false, connections: 0 }
+    { id: 1, name: 'WeatherAPI1', url: `http://${getIPAddress()}:5040/weather`, responseTime: 200, weight: 1, healthy: true, connections: 0 },
+    { id: 2, name: 'WeatherAPI2', url: `http://${getIPAddress()}:3002/weather`, responseTime: 100, weight: 2, healthy: true, connections: 0 },
+    { id: 3, name: 'WeatherAPI3', url: `http://${getIPAddress()}:3003/weather`, responseTime: 300, weight: 1, healthy: true, connections: 0 },
+    { id: 4, name: 'WeatherAPI4', url: `http://${getIPAddress()}:3004/weather`, responseTime: 250, weight: 2, healthy: true, connections: 0 },
+    { id: 5, name: 'WeatherAPI5', url: `http://${getIPAddress()}:3005/weather`, responseTime: 150, weight: 1, healthy: false, connections: 0 }
 ];
 
 let currentIndex = 0;
