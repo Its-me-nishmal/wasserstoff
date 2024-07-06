@@ -25,6 +25,7 @@
     "axios": "^1.7.2",
     "express": "^4.19.2",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
     "pm2": "^5.4.1"
   },
   "devDependencies": {
