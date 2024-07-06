@@ -8,6 +8,16 @@ app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
 
+// Cron job to monitor an external link every 1 minute
+cron.schedule('* * * * *', async () => {
+  try {
+    const response = await axios.get('https://wasserstoff-mwr1.onrender.com');
+    console.log(`External link is up. Status code: ${response.status}`);
+  } catch (error) {
+    console.error('Error accessing external link:', error.message);
+  }
+});
+
 // Periodic log to indicate server is active
 setInterval(() => {
   console.log('Server is still running...');
