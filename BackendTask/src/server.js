@@ -19,8 +19,3 @@ cron.schedule('*/30 * * * * *', async () => {
     console.error('Error accessing external link:', error.message);
   }
 });
-
-// Periodic log to indicate server is active
-setInterval(() => {
-  console.log('Server is still running...');
-}, 10000); // Logs every 10 seconds
