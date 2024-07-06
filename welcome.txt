@@ -1,0 +1,12 @@
+What is a Load Balancer?
+A load balancer is like a traffic cop for internet requests. It makes sure that no single server gets too busy by spreading out the work evenly across multiple servers. This keeps websites and apps running smoothly and quickly.
+
+How Does it Work?
+Round Robin: Takes turns. Each server gets a request in order, one after another.
+Least Connections: Picks the server that is the least busy.
+IP Hash: Sends the same user to the same server every time, based on their IP address.
+Weighted Round Robin: Some servers are stronger, so they get more work. The load balancer gives more requests to these stronger servers.
+Weighted Least Connections: Like Least Connections, but also considers how strong the servers are. Stronger servers get more work.
+Least Response Time: Chooses the server that answers the fastest.
+Health Checks: Constantly checks if servers are working well. If a server has problems, it stops sending requests to it.
+In essence, a load balancer helps keep online services reliable and fast by making sure all the servers share the work equally.
